@@ -121,13 +121,11 @@ function URL_GT(keyword, country, region, year, month, length){
         var data = $.csv.toArrays(csv);
         var html = '';
         for(var row in data) {
-          html += '
-<tr>\r\n';
+          html += '<tr>\r\n';
           for(var item in data[row]) {
             html += '<td>' + data[row][item] + '</td>\r\n';
           }
-          html += '</tr>
-\r\n';
+          html += '</tr>\r\n';
         }
         $('#contents').html(html);
       };
