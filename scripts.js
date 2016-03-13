@@ -1,6 +1,15 @@
 
 //'use strict';
 
+
+var links = executeWithParameters()
+$('a.yourlink').click(function(e) {
+    e.preventDefault();
+    for(var i=0; i<links.length; i++){
+      window.open(links[i]);
+    }
+});
+
 function getFormKeywords(){
  var links;
  var keyword1 = document.getElementById('keywordID1').value;
@@ -11,14 +20,16 @@ function getFormKeywords(){
  var keywords = [keyword1, keyword2, keyword3, keyword4, keyword5];
 
  var new_keywords = [];
+ var j = 0; // position in new_keywordsarray
  for(var i=0; i<keywords.length; i++){
   if(keywords[i]===""){
    continue;
   }
-  new_keywords[i] = keywords[i];
+  new_keywords[j] = keywords[i];
  }
+ j++
  links = URL_GT(new_keywords);
- window.location = links.url;
+ window.location = links;
 }
 
 
@@ -31,7 +42,7 @@ function URL_GT(keyword, country, region, year, month, length){
   var URL = "";
   var month=1;
   var length=3;
-  var links = new Object();
+  var links;
 
   
   //Geographic restrictions
@@ -62,7 +73,7 @@ function URL_GT(keyword, country, region, year, month, length){
   URL = URL.replace(" ", "%20");
   console.log(URL);
 
-  links.url = URL;
+  links = URL;
   return(links);
 }
 
@@ -131,3 +142,31 @@ function URL_GT(keyword, country, region, year, month, length){
       };
       reader.onerror = function(){ alert('Unable to read ' + file.fileName); };
     }
+
+
+function executeWithParameters(){
+  var GET = {};
+  var query = window.location.search.substring(1).split("&");
+  for (var i = 0, max = query.length; i < max; i++)
+  {
+      if (query[i] === "") // check for trailing & with no param
+          continue;
+
+      var param = query[i].split("=");
+      GET[decodeURIComponent(param[0])] = decodeURIComponent(param[1] || "");
+
+  }
+  return convertToLinks(GET);
+}
+
+function convertToLinks(GET){
+  var queries = Object.keys(GET)
+  var links = [];
+  var search_terms;
+  for(var i=0; i < queries.length; i++){
+      search_terms = GET[queries[i]].split(",");
+      links[i] = URL_GT(search_terms);
+  }
+  return links;
+}
+
